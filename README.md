@@ -1,5 +1,7 @@
-<<<<<<< HEAD
-#easyDb 使用说明
+
+#easyDb  
+
+使用apache poi  和springboot ；
 
 ###1. 设计结构
 WorkBook: this is use as an database  ,it provide a WorkBook object;
@@ -185,10 +187,3 @@ public class Test{
     }
 ```
 所有接口采用了jmeter 进行接口测试，单文件单表单线程测试；
-
-
-
-=======
-# EasyDb
-an excel based Database
->>>>>>> 8144b3aafc484ff0a2f3e1a8f254e956a0c9e989
