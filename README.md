@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #easyDb 使用说明
 
 ###1. 设计结构
@@ -187,3 +188,7 @@ public class Test{
 
 
 
+=======
+# EasyDb
+an excel based Database
+>>>>>>> 8144b3aafc484ff0a2f3e1a8f254e956a0c9e989
