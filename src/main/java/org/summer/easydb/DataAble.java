@@ -3,7 +3,7 @@ package org.summer.easydb;
 
 
 
-public interface DataAble<T>  {
+public interface DataAble<T>   {
 
     int getFieldIndexByName(String fieldName);
 

@@ -18,13 +18,14 @@ public class Editor<T> extends AbstractEditor<T> {
     @Override
     public boolean putObj(T t) {
         int lastRowNum = dataTable.getSheet().getLastRowNum();
-        if(lastRowNum< dataTable.maxRowNums){
+        if(lastRowNum< dataTable.getMaxRowNums()){
             return putObjForce(lastRowNum+1,t);
         }else {
-            System.out.println("已经达到最大行上限" + dataTable.maxRowNums);
+            System.out.println("已经达到最大行数上限" + dataTable.getMaxRowNums());
             return false;
         }
     }
+
     @Override
     public boolean putObjForce(int index,T t) {
         Row row = dataTable.getSheet().createRow(index);
@@ -56,7 +57,7 @@ public class Editor<T> extends AbstractEditor<T> {
     @Override
     public int putObjBatch(List<T> list) {
         int lastRowNum = dataTable.getSheet().getLastRowNum();
-        int end=dataTable.maxRowNums>(lastRowNum+list.size())?list.size()+lastRowNum+1:dataTable.maxRowNums;
+        int end=dataTable.getMaxRowNums()>(lastRowNum+list.size())?list.size()+lastRowNum+1:dataTable.getMaxRowNums();
         for (int i=lastRowNum+1; i <end; i++) {
             dataTable.getSheet().createRow(i);
             if(putObjForce(i,list.get(i)))
@@ -68,7 +69,7 @@ public class Editor<T> extends AbstractEditor<T> {
     @Override
     public boolean postObj(int index, T t) {
         Row row=null;
-        if(dataTable.maxRowNums>index){
+        if(dataTable.getMaxRowNums()>index){
              row = dataTable.getSheet().getRow(index);
         }
         if (row == null) {
@@ -107,25 +108,6 @@ public class Editor<T> extends AbstractEditor<T> {
     }
 
 
-    @Override
-    public boolean write() {
-        OutputStream outputStrean = getOutputStrean();
-        try {
-            dataTable.getSheet().getWorkbook().write(outputStrean);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (outputStrean != null) {
-                    outputStrean.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
     @Override
     public boolean del(int index) {
         org.apache.poi.ss.usermodel.Sheet sheet = dataTable.getSheet();

@@ -6,22 +6,22 @@ import org.summer.easydb.DataAble;
 import org.summer.easydb.DataSourceConfig;
 import org.summer.entity.Account;
 import org.summer.entity.Company;
-import org.summer.easydb.DataSourceScanner;
+import org.summer.easydb.DataSourceFactory;
 
 
 @Repository
 public class Data  implements DataSourceConfig {
     @Override
     public String DataSource() {
-        return "C:/dev/demo.xls";
+        return "C:/dev/demo.xlsx";
     }
     @Bean(name="company")
     public DataAble company(){
-        return DataSourceScanner.connectSheet(new Company(),this);
+        return DataSourceFactory.connectSheet(new Company(),this);
     }
     @Bean(name="account")
     public DataAble account(){
-        return  DataSourceScanner.connectSheet(new Account(),this);
+        return  DataSourceFactory.connectSheet(new Account(),this);
     }
 
 

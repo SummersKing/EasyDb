@@ -25,12 +25,10 @@ public abstract class AbsrtactSelector<T> implements SelectAble<T>{
     /*当 set 为0时则会调用set方法,设置为true,该对象每次查询都会判断是否为fasle ，若为false则不执行*/
     boolean ending=false;
 
-    int primaryKey;
 
 
-    AbsrtactSelector( DataTable dataTable) {
+    AbsrtactSelector( DataTable dataTable ) {
         this.dataTable=dataTable;
-        this.primaryKey=dataTable.primaryKey;
     }
 
 

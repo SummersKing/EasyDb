@@ -15,8 +15,8 @@ public class IndexController {
 
     @GetMapping("/testEq")
     public @ResponseBody  String testEq() {
-        System.out.println("testEq()");
-        return cs.testEq();
+        System.out.println(cs.testEq());
+        return "s";
     }
         @GetMapping("/testWriteBatch")
     public @ResponseBody  String testWriteBatch() {
