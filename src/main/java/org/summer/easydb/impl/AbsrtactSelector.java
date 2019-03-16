@@ -15,8 +15,8 @@ import java.util.Set;
 import static org.apache.poi.ss.usermodel.Cell.*;
 import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN;
 
-public abstract class AbsrtactSelector<T> implements SelectAble{
-    AbstractSheet dataTable;
+public abstract class AbsrtactSelector<T> implements SelectAble<T>{
+    DataTable dataTable;
 
     /*用来缓存符合条件的行号*/
     Set<Integer> rowIndexSet=new HashSet<>();
@@ -28,7 +28,7 @@ public abstract class AbsrtactSelector<T> implements SelectAble{
     int primaryKey;
 
 
-    AbsrtactSelector( AbstractSheet dataTable) {
+    AbsrtactSelector( DataTable dataTable) {
         this.dataTable=dataTable;
         this.primaryKey=dataTable.primaryKey;
     }
@@ -60,24 +60,22 @@ public abstract class AbsrtactSelector<T> implements SelectAble{
     }
 
     // 将多个单元格和条件进行比较，返回符合条件的单元格的列数
-    public Set<Integer> likeSelectInColumn( Set column,String[] conditions) {
-        Iterator<Cell> iterator = column.iterator();
+    public Set<Integer> likeSelectInColumn( Set<Cell>column,String[] conditions) {
         if(conditions.length==1){
-            while (iterator.hasNext()) {
-                Cell cell = iterator.next();
+            column.forEach(cell->{
                 if (getCellContext(cell).contains(conditions[0])) {
                     rowIndexSet.add(cell.getRowIndex());
                 }
-            }
+            });
         }else{
-            while (iterator.hasNext()) {
-                Cell cell = iterator.next();
-                if (multipleLikeJudge(getCellContext(cell),conditions)) {
-                    if(cell!=null)
-                    rowIndexSet.add(cell.getRowIndex());
-                }
+                column.forEach(cell->{
+                    if (multipleLikeJudge(getCellContext(cell),conditions)) {
+                        if(cell!=null)
+                            rowIndexSet.add(cell.getRowIndex());
+                    }
+                });
             }
-        }
+
         return rowIndexSet;
     }
     /*当查询未初始化的时候为null,初始化set,当set长度为0时说明当下已经查询不到结果了，所以设置类状态为false*/
@@ -93,7 +91,7 @@ public abstract class AbsrtactSelector<T> implements SelectAble{
     }
 
     /*跟据属性rowindexSet 获取CelLSet*/
-    Set<Cell> getCellSet(int fieldIndex){
+        Set<Cell> getCellSet(int fieldIndex){
         Set<Integer> rowIndexSet=getRowIndexSet();
         Set<Cell> cellSet=rowIndexSet.size()==0?getColumnCellSet(fieldIndex):getSpecifyCellSet(fieldIndex,rowIndexSet);
         return cellSet;

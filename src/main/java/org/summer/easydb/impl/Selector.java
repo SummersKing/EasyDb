@@ -11,9 +11,9 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 
-public class SheetSelector<T> extends AbsrtactSelector<T>  {
+public class Selector<T> extends AbsrtactSelector<T>  {
 
-    SheetSelector(AbstractSheet sheet) {
+    Selector(DataTable sheet) {
         super(sheet);
     }
 
@@ -34,13 +34,6 @@ public class SheetSelector<T> extends AbsrtactSelector<T>  {
         return dataWrapper;
     }
 
-    public DataWrapper<T>getRowsList1(String [] specified) {
-        DataWrapper<T> dataWrapper=new DataWrapper<>(primaryKey);
-        for (String i : specified) {
-           // dataWrapper.add(i,(T)getRowToObj(i));
-        }
-        return dataWrapper;
-    }
 
 
         /*行号，查询条件， 查询条件和数据相等时返回*/
@@ -62,15 +55,6 @@ public class SheetSelector<T> extends AbsrtactSelector<T>  {
         like(columnIndex,conditions);
         return  this;
     }
-
-
-
-
-
-
-
-
-
 
     boolean onlyEq(int rowIndex,int fieldIndex,String condition,Sheet sheet){
         Row row = sheet.getRow(rowIndex);
@@ -119,20 +103,11 @@ public class SheetSelector<T> extends AbsrtactSelector<T>  {
         Sheet sheet = dataTable.getSheet();
         Iterator<Integer> iterator = rowIndexSet.iterator();
         if(conditions.length==1){
-            while(iterator.hasNext()){
-                int i=iterator.next();
-                if(multipleEq(i,fieldIndex,conditions,sheet)){
-                    rowIndexSet.add(i);
-                }
-            }
-        }else{
-            while(iterator.hasNext()){
-                int i=iterator.next();
-                if(onlyEq(i,fieldIndex,conditions[0],sheet)){
-                    rowIndexSet.add(i);
-                }
-            }
+            rowIndexSet.forEach(index->{ if(onlyEq(index,fieldIndex,conditions[0],sheet)){ rowIndexSet.add(index);}});}
+        else{
+            rowIndexSet.forEach(index -> {if (multipleEq(index, fieldIndex, conditions, sheet)) { rowIndexSet.add(index);} });
         }
+
     }
     @Override
     public SelectAble eq(int fieldIndex, String... conditions){
@@ -155,14 +130,6 @@ public class SheetSelector<T> extends AbsrtactSelector<T>  {
 
 
 
-
-
-
-
-
-
-
-
     /**
      * 单个单元格数值比较的方法
      *
@@ -172,7 +139,7 @@ public class SheetSelector<T> extends AbsrtactSelector<T>  {
 
     /*获取最后的查询结果将结果转换为T list*/
 
-
+    @Override
     public List<T>getResultList(){
         Object[] temp = this.rowIndexSet.toArray();
         if(temp.length==0){

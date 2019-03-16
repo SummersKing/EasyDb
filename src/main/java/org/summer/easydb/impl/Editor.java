@@ -2,7 +2,6 @@ package org.summer.easydb.impl;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.summer.easydb.Constant;
 import org.summer.easydb.DataWrapper;
 
 import java.io.IOException;
@@ -10,30 +9,34 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class SheetEditor<T> extends AbstractEditor<T> {
+public class Editor<T> extends AbstractEditor<T> {
 
-    SheetEditor(Sheet sheet) {
-        super(sheet);
+    Editor(DataTable dataTable) {
+        super(dataTable);
     }
 
     @Override
     public boolean putObj(T t) {
         int lastRowNum = dataTable.getSheet().getLastRowNum();
-        if(lastRowNum< Constant.MAX_XLS_ROWS_NUMBER){
-            Row row = dataTable.getSheet().createRow(lastRowNum+1);
-            Map<Integer, Field> fieldMap = dataTable.getFieldMap();
-            Iterator<Integer> iterator = fieldMap.keySet().iterator();
-
-            while (iterator.hasNext()) {
-                Integer key = iterator.next();
-                putFieldObJToCell(fieldMap.get(key), row.createCell(key), t);
-            }
-            return true;
+        if(lastRowNum< dataTable.maxRowNums){
+            return putObjForce(lastRowNum+1,t);
+        }else {
+            System.out.println("已经达到最大行上限" + dataTable.maxRowNums);
+            return false;
         }
-        System.out.println("已经达到最大行上限"+Constant.MAX_XLS_ROWS_NUMBER);
-        return false;
     }
+    @Override
+    public boolean putObjForce(int index,T t) {
+        Row row = dataTable.getSheet().createRow(index);
+        Map<Integer, Field> fieldMap = dataTable.getFieldMap();
+        Iterator<Integer> iterator = fieldMap.keySet().iterator();
 
+        while (iterator.hasNext()) {
+            Integer key = iterator.next();
+            putFieldObJToCell(fieldMap.get(key), row.createCell(key), t);
+        }
+        return true;
+    }
 
     public boolean putFieldObJToCell(Field field, Cell cell, T t) {
         try {
@@ -53,17 +56,21 @@ public class SheetEditor<T> extends AbstractEditor<T> {
     @Override
     public int putObjBatch(List<T> list) {
         int lastRowNum = dataTable.getSheet().getLastRowNum();
-        for (int i = 0; i < list.size(); i++) {
-            Row row = dataTable.getSheet().createRow(lastRowNum + 1 + i);
-            if(putObj(list.get(i)))
+        int end=dataTable.maxRowNums>(lastRowNum+list.size())?list.size()+lastRowNum+1:dataTable.maxRowNums;
+        for (int i=lastRowNum+1; i <end; i++) {
+            dataTable.getSheet().createRow(i);
+            if(putObjForce(i,list.get(i)))
             break;
         }
-        return lastRowNum + list.size();
+        return end-lastRowNum;
     }
 
     @Override
     public boolean postObj(int index, T t) {
-        Row row = dataTable.getSheet().getRow(index);
+        Row row=null;
+        if(dataTable.maxRowNums>index){
+             row = dataTable.getSheet().getRow(index);
+        }
         if (row == null) {
             return false;
         }

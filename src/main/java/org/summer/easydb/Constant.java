@@ -8,4 +8,5 @@ package org.summer.easydb;
  **/
 public interface Constant {
     Integer MAX_XLS_ROWS_NUMBER=65536;
+    Integer MAX_XLSX_ROWS_NUMBER=1048576;
 }

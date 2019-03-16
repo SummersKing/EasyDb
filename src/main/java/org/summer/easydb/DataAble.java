@@ -3,13 +3,13 @@ package org.summer.easydb;
 
 
 
-public interface DataTable<T>  {
+public interface DataAble<T>  {
 
     int getFieldIndexByName(String fieldName);
 
     EditAble<T> getEditor();
 
-    SelectAble getSelector();
+    SelectAble<T> getSelector();
 
 
 

@@ -3,7 +3,7 @@ package org.summer.easydb;
 
 import org.summer.easydb.annotation.Column;
 import org.summer.easydb.annotation.SheetInfo;
-import org.summer.easydb.impl.Sheet;
+import org.summer.easydb.impl.DataTable;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -11,8 +11,9 @@ import java.util.Map;
 
 public class DataSourceScanner {
 
-    public static DataTable connectSheet(Object obj , DataSourceConfig data){
+    public static DataAble connectSheet(Object obj , DataSourceConfig data){
         Class<?> clazz =  obj.getClass();
+
         SheetInfo sheetInfo = clazz.getAnnotation(SheetInfo.class);
         Integer sheetIndex = sheetInfo.sheetIndex();
         if(sheetIndex==null){
@@ -24,7 +25,7 @@ public class DataSourceScanner {
             Column hl = field.getAnnotation(Column.class);
             map.put(transfer(hl.index()),field.getName());
         }
-        return new Sheet(sheetInfo.beginRowIndex(),sheetIndex,sheetIndex,data.DataSource(),map,clazz);
+        return new DataTable(sheetInfo.beginRowIndex(),sheetIndex,0,data.DataSource(),map,clazz);
     }
 
     public static int transfer(String s){

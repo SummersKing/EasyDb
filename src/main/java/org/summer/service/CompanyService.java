@@ -3,7 +3,7 @@ package org.summer.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.summer.dao.Data;
-import org.summer.easydb.DataTable;
+import org.summer.easydb.DataAble;
 import org.summer.easydb.DataWrapper;
 import org.summer.entity.Company;
 import org.summer.easydb.EditAble;
@@ -34,7 +34,7 @@ public class CompanyService {
     }
 
     public String testPutBatch(){
-        DataTable db = data.company();
+        DataAble db = data.company();
         String[]array={"王","涛","杰","健","坤","颖"};
         List resultList = (List<Company>)db.getSelector().like(4, array[new Random().nextInt(6)]).getResultList();
         EditAble editor = db.getEditor();
@@ -45,7 +45,7 @@ public class CompanyService {
     }
 
     public String testPut(){
-        DataTable db = data.company();
+        DataAble db = data.company();
         String[]array={"海南","广东","福建","四川","浙江","陕西"};
         int i = new Random().nextInt(6);
         List resultList = db.getSelector().like(1, array[i]).getResultList();
@@ -56,7 +56,7 @@ public class CompanyService {
     }
 
     public String testPostBatch(){
-        DataTable db = data.company();
+        DataAble db = data.company();
         String[]array={"福州市","安","阳","西","江","州"};
         int i = new Random().nextInt(6);
         DataWrapper wrapper = db.getSelector().like(2, array[i]).getResultWrapper();
@@ -66,7 +66,7 @@ public class CompanyService {
         return s;
     }
     public String testPost(){
-        DataTable db = data.company();
+        DataAble db = data.company();
         EditAble editor = db.getEditor();
         Company company = new Company();
         int i = new Random().nextInt(65000);
@@ -76,7 +76,7 @@ public class CompanyService {
         return s+""+i;
     }
     public String testDel(){
-        DataTable db = data.company();
+        DataAble db = data.company();
         int i = new Random().nextInt(65000);
         EditAble editor = db.getEditor();
         editor.del(i);
@@ -84,7 +84,7 @@ public class CompanyService {
         return "删除第"+i+"行";
     }
     public String testDelBatch(){
-        DataTable db = data.company();
+        DataAble db = data.company();
         int range = new Random().nextInt(300);
         int[] a=new int[range];
         for(int i=0;i<range;i++) {
@@ -97,7 +97,7 @@ public class CompanyService {
     }
 
     public String testGetWrapper(){
-        DataTable db = data.company();
+        DataAble db = data.company();
         db.getSelector().like(0,"欣").like("city","市","山").getResultWrapper();
         return "";
     }

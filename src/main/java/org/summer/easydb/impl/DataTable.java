@@ -1,9 +1,11 @@
 package org.summer.easydb.impl;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.summer.easydb.DataAble;
+import org.summer.easydb.EditAble;
+import org.summer.easydb.SelectAble;
 import org.summer.easydb.annotation.Column;
 import org.summer.easydb.DataSourceScanner;
-import org.summer.easydb.DataTable;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -11,22 +13,20 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractSheet<T> extends AbstractWorkBook implements DataTable<T> {
+public  class DataTable<T> extends AbstractDataSource implements DataAble<T> {
 
     int sheetIndex;
     int primaryKey;
     Map<Integer, String> headListMap;
-    Map<Integer,T> dataCache;
     Set<Integer> headListKey;
     org.apache.poi.ss.usermodel.Sheet sheet;
     int beginRowIndex;
     Class<T> t;
-
-    public AbstractSheet(){
+    public DataTable(){
 
     }
 
-    public AbstractSheet(int beginRowIndex, int sheetIndex, String src,int primaryKey, Map<Integer, String> headListMap, Class<T> t) {
+    public DataTable(int beginRowIndex, int sheetIndex, Integer primaryKey, String src, Map<Integer, String> headListMap, Class<T> t) {
         super(src);
         this.headListMap = headListMap;
         this.headListKey = headListMap.keySet();
@@ -36,6 +36,7 @@ public abstract class AbstractSheet<T> extends AbstractWorkBook implements DataT
         this.t = t;
         this.primaryKey=primaryKey;
     }
+
 
     public  Map<Integer,Field> getFieldMap() {
         Map<Integer, String> map = headListMap;
@@ -54,60 +55,22 @@ public abstract class AbstractSheet<T> extends AbstractWorkBook implements DataT
     }
 
 
-    public int getPrimaryKey() {
-        return primaryKey;
-    }
 
-    public void setPrimaryKey(int primaryKey) {
-        this.primaryKey = primaryKey;
-    }
-
-    public int getSheetIndex() {
-        return sheetIndex;
-    }
-
-    public void setSheetIndex(int sheetIndex) {
-        this.sheetIndex = sheetIndex;
-    }
 
     public Map<Integer, String> getHeadListMap() {
         return headListMap;
-    }
-
-    public void setHeadListMap(Map<Integer, String> headListMap) {
-        this.headListMap = headListMap;
-    }
-
-    public Map<Integer, T> getDataCache() {
-        return dataCache;
-    }
-
-    public void setDataCache(Map<Integer, T> dataCache) {
-        this.dataCache = dataCache;
     }
 
     public Set<Integer> getHeadListKey() {
         return headListKey;
     }
 
-    public void setHeadListKey(Set<Integer> headListKey) {
-        this.headListKey = headListKey;
-    }
-
     public Sheet getSheet() {
         return sheet;
     }
 
-    public void setSheet(Sheet sheet) {
-        this.sheet = sheet;
-    }
-
     public int getBeginRowIndex() {
         return beginRowIndex;
-    }
-
-    public void setBeginRowIndex(int beginRowIndex) {
-        this.beginRowIndex = beginRowIndex;
     }
 
     public Class<T> getT() {
@@ -132,6 +95,19 @@ public abstract class AbstractSheet<T> extends AbstractWorkBook implements DataT
         }
         return index;
     }
+
+    @Override
+    public EditAble getEditor() {
+
+        return new Editor(this);
+    }
+
+    @Override
+    public SelectAble getSelector() {
+
+        return new Selector(this);
+    }
+
 
 
 

@@ -3,10 +3,10 @@ package org.summer.easydb;
 import java.util.List;
 import java.util.Set;
 
-public interface SelectAble {
+public interface SelectAble<T> {
 
-    List getResultList();
-    DataWrapper getResultWrapper();
+    List<T> getResultList();
+    DataWrapper<T> getResultWrapper();
     SelectAble eq(String fieldName, String... conditions);
     SelectAble eq( int fieldIndex,String ...conditions);
     SelectAble like( String  fieldName,String ...conditions);

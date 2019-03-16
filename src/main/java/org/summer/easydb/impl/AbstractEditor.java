@@ -1,5 +1,6 @@
 package org.summer.easydb.impl;
 
+import org.summer.easydb.impl.DataTable;
 import org.summer.easydb.EditAble;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,10 +8,10 @@ import java.io.OutputStream;
 
 public abstract class AbstractEditor<T> implements EditAble<T> {
 
-    Sheet dataTable;
+    DataTable dataTable;
     String src;
 
-    AbstractEditor(Sheet dataTable){
+    AbstractEditor(DataTable dataTable){
         this.dataTable=dataTable;
         this.src=dataTable.src;
 

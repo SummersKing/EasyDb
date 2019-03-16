@@ -18,11 +18,20 @@ public interface EditAble<T> {
     boolean putObj(T t);
 
     /*
+     * @Name putObj
+     * @Desc 将单个对象强制插入到制定行
+     * @Date 19:21 2019/3/1
+     **/
+    boolean putObjForce(int index,T t);
+
+
+    /*
      * @Name putObjBatch
-     * @Desc 将对象集合放入数据中
+     * @Desc 将对象集合放入数据中,返回最後一行
      * @Date 19:22 2019/3/1
      **/
     int putObjBatch(List<T> t);
+
 
     /*
      * @Name postObj

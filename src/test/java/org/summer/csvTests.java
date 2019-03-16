@@ -7,12 +7,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.summer.dao.Data;
-import org.summer.easydb.DataTable;
+import org.summer.easydb.DataAble;
 import org.summer.easydb.DataWrapper;
+import org.summer.easydb.impl.DataTable;
 import org.summer.entity.Account;
 import org.summer.entity.Company;
 import org.summer.easydb.DataSourceScanner;
 import org.summer.easydb.EditAble;
+
+import java.util.List;
 
 
 //@RunWith(SpringRunner.class)
@@ -23,7 +26,7 @@ public class csvTests {
     @Test
     /*横向数据采集测试*/
     public void rowTest() {
-        DataTable<Company> dataTable = DataSourceScanner.connectSheet(new Company(), new Data());
+        DataAble<Company> dataTable = DataSourceScanner.connectSheet(new Company(), new Data());
         EditAble editor = dataTable.getEditor();
         Company company = new Company();
         company.setPhone("12321");
@@ -33,7 +36,7 @@ public class csvTests {
     @Test
     /*横向数据采集测试*/
     public void rowTe1st() {
-        DataTable<Account> dataTable = DataSourceScanner.connectSheet(new Account(), new Data());
+        DataAble<Account> dataTable = DataSourceScanner.connectSheet(new Account(), new Data());
         EditAble editor = dataTable.getEditor();
         Account company = new Account();
         company.setNickName("1ninoinlkjnioklnjnjnjnjio2321");
@@ -44,18 +47,43 @@ public class csvTests {
         editor.postObj(6,company);
         editor.write();
     }
+
+    @Test
+    /*横向数据采集测试*/
+    public void select() {
+        DataAble <Account>dataTable = DataSourceScanner.connectSheet(new Company(), new Data());
+        System.out.println(dataTable.getClass().getName());
+        System.out.println(dataTable.getClass().getTypeName());
+        List resultList = dataTable.getSelector().like("name", "四川", "四川").getResultList();
+        System.out.println(resultList.size());
+       resultList.forEach(o -> {
+           System.out.println(o);
+       });
+
+
+    }
         @Test
     public  void test()
     {
-        System.out.println( DataSourceScanner.transfer("A"));
+        DataAble db = DataSourceScanner.connectSheet(new Company(), new Data());
+        EditAble editor = db.getEditor();
+        Company company = new Company();
+        company.setName("asifdhonsaiunholsa");
+        editor.putObjForce(655356,company);
+        editor.write();
     }
+
+
+
+
+
 
     /*
     @Test
     *//*纵向数据采集测试*//*
     *//*废弃测试*//*
     public void columnTest() {
-        Sheet db =DataSourceScanner.connectSheet(new Company(), new Data());
+        DataTable db =DataSourceScanner.connectSheet(new Company(), new Data());
         List resultList = db.getSelector().like("name", "新").getResultList();
         System.out.println(resultList.size());
     }
@@ -64,15 +92,15 @@ public class csvTests {
 
     @Test
     public  void se(){
-        Sheet<Company> sheet = DataSourceScanner.connectSheet(new Company(), new Data());
-        SheetSelector<Company> selector = sheet.getSelector();
+        DataTable<Company> sheet = DataSourceScanner.connectSheet(new Company(), new Data());
+        Selector<Company> selector = sheet.getSelector();
         List resultList = selector.like("欣", "name").getResultList();
         System.out.println(resultList.size());
     }
     @Test
     public  void se1(){
-        Sheet<Company> sheet = DataSourceScanner.connectSheet(new Company(), new Data());
-        SheetSelector<Company> selector = sheet.getSelector();
+        DataTable<Company> sheet = DataSourceScanner.connectSheet(new Company(), new Data());
+        Selector<Company> selector = sheet.getSelector();
         List resultList = selector.like("name", "离","散").eq(2,"大连市").getResultList();
         System.out.println(resultList.size());
     }
@@ -106,15 +134,15 @@ public class csvTests {
     @Test
 
     public void annotation(){
-        Sheet<Company> sheet = DataSourceScanner.connectSheet(new Company(), new Data());
+        DataTable<Company> sheet = DataSourceScanner.connectSheet(new Company(), new Data());
         //sheet.getEditor().delete(3778);
-        SheetSelector<Company> selector = sheet.getSelector();
+        Selector<Company> selector = sheet.getSelector();
         DataWrapper<Company> wrapper=new DataWrapper<>();
         Company company=new Company();
         company.setCity("啥时能花花奴奴i市");
         wrapper.add(18,company);
         wrapper.add(20,company);
-        SheetEditor<Company> editor = sheet.getEditor();
+        Editor<Company> editor = sheet.getEditor();
         editor.postObjBatch(wrapper);
         editor.write();
     }
@@ -122,7 +150,7 @@ public class csvTests {
     @Test
 
     public void q2(){
-        Sheet<Account> sheet = DataSourceScanner.connectSheet(new Account(), new Data());
+        DataTable<Account> sheet = DataSourceScanner.connectSheet(new Account(), new Data());
         List<Account> rowsList = sheet.getSelector().getRowsList(new Integer[]{8, 10});
         System.out.println(rowsList.get(0));
         DataWrapper<Account> wrapper=new DataWrapper<>();
@@ -130,7 +158,7 @@ public class csvTests {
        a.setNickName("测试修改");
         wrapper.add(8,a);
         wrapper.add(10,a);
-        SheetEditor<Account> editor = sheet.getEditor();
+        Editor<Account> editor = sheet.getEditor();
         String s = editor.postObjBatch(wrapper);
         System.out.println(s);
         editor.write();
