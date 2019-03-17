@@ -12,9 +12,15 @@ import org.summer.easydb.DataSourceFactory;
 @Repository
 public class Data  implements DataSourceConfig {
     @Override
-    public String DataSource() {
+    public String dataSource() {
         return "C:/dev/demo.xlsx";
     }
+
+    @Override
+    public String password() {
+        return "asd123";
+    }
+
     @Bean(name="company")
     public DataAble company(){
         return DataSourceFactory.connectSheet(new Company(),this);

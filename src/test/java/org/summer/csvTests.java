@@ -8,9 +8,11 @@ import org.junit.runners.JUnit4;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.summer.dao.Data;
 import org.summer.easydb.*;
+import org.summer.easydb.impl.SelectAble;
+import org.summer.easydb.util.Util;
 import org.summer.entity.Account;
 import org.summer.entity.Company;
-
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,9 +27,20 @@ public class csvTests {
         DataAble<Company> dataTable = DataSourceFactory.connectSheet(new Company(), new Data());
         EditAble editor = dataTable.getEditor();
         Company company = new Company();
-        company.setPhone("12321");
-        editor.putObj(company);
-        editor.write();
+        company.setPhone("1231");
+        company.setCity("西安");
+        company.setName("联合王国");
+        company.setLegalPerson("sum");
+        company.setMail("wqqqqqihuiqokoiu@gmail.com");
+        List<Company> l=new ArrayList();
+        for (int i=0;i<300;i++) {
+            l.add((Company) Util.deepClone(company));
+        }
+        SelectAble<Company> selector = dataTable.getSelector();
+        List list = selector.like(0, "成都","广东","浙江","上海","北京").getResultList();
+        System.out.println(list.size());
+       // System.out.println(Arrays.deepToString(list.toArray()));
+        editor.putObjBatch(list);
     }
     @Test
     /*横向数据采集测试*/
@@ -48,10 +61,8 @@ public class csvTests {
     /*横向数据采集测试*/
     public void select() {
         DataAble <Account>dataTable = DataSourceFactory.connectSheet(new Company(), new Data());
-        System.out.println(dataTable.getClass().getName());
-        System.out.println(dataTable.getClass().getTypeName());
-        List resultList = dataTable.getSelector().like("name", "四川", "四川").getResultList();
-        System.out.println(resultList.size());
+
+        List resultList = dataTable.getSelector().like("name", "四川", "陕西").getResultList();
        resultList.forEach(o -> {
            System.out.println(o);
        });
@@ -76,7 +87,7 @@ public class csvTests {
         EditAble editor = db.getEditor();
         Company company = new Company();
         company.setName("asifdhonsaiunholsa");
-        company.setPhone("1232");
+        company.setPhone("132");
         company.setCity("北京");
         editor.putObj(company);
         editor.write();

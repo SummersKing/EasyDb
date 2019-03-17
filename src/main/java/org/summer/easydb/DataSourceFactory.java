@@ -4,7 +4,8 @@ package org.summer.easydb;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.crypt.Decryptor;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -33,7 +34,7 @@ public class DataSourceFactory {
             Column hl = field.getAnnotation(Column.class);
             map.put(Util.transferA21(hl.index()),field.getName());
         }
-        return new DataTable(sheetInfo.beginRowIndex(),sheetIndex,data.DataSource(),map,clazz);
+        return new DataTable(sheetInfo.beginRowIndex(),sheetIndex,data.dataSource(),map,clazz);
     }
 
     /*
@@ -42,23 +43,32 @@ public class DataSourceFactory {
      * @Date 16:55 2019/3/16
      **/
     public static Workbook getDataSource(String src) {
+        InputStream inp=null;
         try {
-            InputStream inp = new FileInputStream(new File(src));
+
+             inp = new FileInputStream(new File(src));
             inp = !inp.markSupported() ? new PushbackInputStream(inp, 8) : inp;
             if (POIFSFileSystem.hasPOIFSHeader(inp)) {
 
                 return new HSSFWorkbook(inp);
             } else if (POIXMLDocument.hasOOXMLHeader(inp)) {
-                return new XSSFWorkbook(OPCPackage.open(inp));
+                return new XSSFWorkbook(inp);
             } else {
                 throw new IllegalArgumentException("该数据源无法读取，请检查文件");
             }
-        } catch (InvalidFormatException e) {
-            e.printStackTrace();
+
         } catch (FileNotFoundException e) {
             System.out.println(src+ "没有找到,请检查路径");
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            if(inp!=null){
+                try {
+                    inp.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }

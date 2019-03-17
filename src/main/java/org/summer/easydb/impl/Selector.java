@@ -5,7 +5,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.summer.easydb.DataWrapper;
-import org.summer.easydb.SelectAble;
+import org.summer.easydb.util.SheetUtil;
+import org.summer.easydb.util.Util;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -51,7 +52,7 @@ public class Selector<T> extends AbsrtactSelector<T>  {
     //like 方法的重载
     public SelectAble like(String  fieldName, String ...conditions) {
         if(this.ending) return this;
-        int columnIndex = dataTable.getFieldIndexByName(fieldName);
+        int columnIndex = Util.getFieldIndexByName(fieldName,dataTable.getT());
         like(columnIndex,conditions);
         return  this;
     }
@@ -60,7 +61,7 @@ public class Selector<T> extends AbsrtactSelector<T>  {
         Row row = sheet.getRow(rowIndex);
         if(row!=null) {
             Cell cell = dataTable.getSheet().getRow(rowIndex).getCell(fieldIndex);
-            if (condition.equals(getCellContext(cell))) {
+            if (condition.equals(SheetUtil.getCellContext(cell))) {
                 return true;
             }
         }
@@ -71,7 +72,7 @@ public class Selector<T> extends AbsrtactSelector<T>  {
         Row row = sheet.getRow(rowIndex);
         if(row!=null) {
             Cell cell = row.getCell(fieldIndex);
-            if (multipleEqualsJudge(getCellContext(cell), conditions)) {
+            if (multipleEqualsJudge(SheetUtil.getCellContext(cell), conditions)) {
                return  true;
             }
         }
@@ -123,7 +124,7 @@ public class Selector<T> extends AbsrtactSelector<T>  {
     @Override
     public SelectAble eq(String fieldName, String... conditions){
         if(this.ending) return this;
-        int fieldIndex = dataTable.getFieldIndexByName(fieldName);
+        int fieldIndex = Util.getFieldIndexByName(fieldName,dataTable.getT());
         return eq(fieldIndex,conditions);
     }
 
@@ -170,7 +171,7 @@ public class Selector<T> extends AbsrtactSelector<T>  {
         for (int i = 0; i < columnIndexList.size(); i++) {
             final Cell cell = row.getCell(columnIndexList.get(i));
             if (cell != null) {
-                rowData.add(getCellContext(cell));
+                rowData.add(SheetUtil.getCellContext(cell));
             } else {
                 rowData.add("");
             }
@@ -191,7 +192,7 @@ public class Selector<T> extends AbsrtactSelector<T>  {
         try {
             obj = clazz.newInstance();
             for (Object i : dataTable.getHeadListKey()) {
-                String value = getCellContext(row.getCell((int)i));
+                String value = SheetUtil.getCellContext(row.getCell((int)i));
                 Field field = clazz.getDeclaredField((String) dataTable.getHeadListMap().get(i));
                 field.setAccessible(true);
                 field.set(obj, value);

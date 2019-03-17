@@ -3,16 +3,18 @@ package org.summer.easydb.impl;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.summer.easydb.DataWrapper;
+import org.summer.easydb.util.Util;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class Editor<T> extends AbstractEditor<T> {
-
-    Editor(DataTable dataTable) {
+    private DataTable dataTable;
+    private  String src;
+    public Editor(DataTable dataTable) {
         super(dataTable);
+        this.dataTable=dataTable;
+        this.src=dataTable.getSrc();
     }
 
     @Override
@@ -27,9 +29,9 @@ public class Editor<T> extends AbstractEditor<T> {
     }
 
     @Override
-    public boolean putObjForce(int index,T t) {
+    public synchronized  boolean putObjForce(int index,T t) {
         Row row = dataTable.getSheet().createRow(index);
-        Map<Integer, Field> fieldMap = dataTable.getFieldMap();
+        Map<Integer, Field> fieldMap = Util.getFieldMap(dataTable.getHeadListMap(),dataTable.getT());
         Iterator<Integer> iterator = fieldMap.keySet().iterator();
 
         while (iterator.hasNext()) {
@@ -58,11 +60,13 @@ public class Editor<T> extends AbstractEditor<T> {
     public int putObjBatch(List<T> list) {
         int lastRowNum = dataTable.getSheet().getLastRowNum();
         int end=dataTable.getMaxRowNums()>(lastRowNum+list.size())?list.size()+lastRowNum+1:dataTable.getMaxRowNums();
+        int index=0;
         for (int i=lastRowNum+1; i <end; i++) {
             dataTable.getSheet().createRow(i);
-            if(putObjForce(i,list.get(i)))
-            break;
+            if(putObjForce(i,list.get(index++)))
+            continue;
         }
+        System.out.println(end-lastRowNum);
         return end-lastRowNum;
     }
 
@@ -75,7 +79,7 @@ public class Editor<T> extends AbstractEditor<T> {
         if (row == null) {
             return false;
         }
-        Map<Integer, Field> fieldMap = dataTable.getFieldMap();
+        Map<Integer, Field> fieldMap =  Util.getFieldMap(dataTable.getHeadListMap(),dataTable.getT());
         Iterator<Integer> iterator = fieldMap.keySet().iterator();
         while (iterator.hasNext()) {
             Integer key = iterator.next();

@@ -1,4 +1,6 @@
-package org.summer.easydb;
+package org.summer.easydb.impl;
+
+import org.summer.easydb.DataWrapper;
 
 import java.util.List;
 import java.util.Set;

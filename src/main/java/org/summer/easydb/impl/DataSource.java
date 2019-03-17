@@ -12,12 +12,13 @@ public abstract class DataSource implements Serializable {
     private String src;
     private Workbook workbook;
     private int maxRowNums;
+    private  String password;
 
 
     public DataSource(){
 
     }
-    public DataSource(String src){
+    public DataSource(String src ){
         setSrc(src);
         setWorkbook();
         setMaxRowNums();
@@ -31,6 +32,14 @@ public abstract class DataSource implements Serializable {
 
 
         this.src = src;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Workbook getWorkbook() {

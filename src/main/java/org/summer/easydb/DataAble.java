@@ -1,11 +1,11 @@
 package org.summer.easydb;
 
 
-
+import org.summer.easydb.impl.SelectAble;
 
 public interface DataAble<T>   {
 
-    int getFieldIndexByName(String fieldName);
+
 
     EditAble<T> getEditor();
 

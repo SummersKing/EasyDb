@@ -4,7 +4,7 @@ package org.summer.easydb.impl;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
-import org.summer.easydb.SelectAble;
+import org.summer.easydb.util.SheetUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
@@ -61,13 +61,13 @@ public abstract class AbsrtactSelector<T> implements SelectAble<T>{
     public Set<Integer> likeSelectInColumn( Set<Cell>column,String[] conditions) {
         if(conditions.length==1){
             column.forEach(cell->{
-                if (getCellContext(cell).contains(conditions[0])) {
+                if (SheetUtil.getCellContext(cell).contains(conditions[0])) {
                     rowIndexSet.add(cell.getRowIndex());
                 }
             });
         }else{
                 column.forEach(cell->{
-                    if (multipleLikeJudge(getCellContext(cell),conditions)) {
+                    if (multipleLikeJudge(SheetUtil.getCellContext(cell),conditions)) {
                         if(cell!=null)
                             rowIndexSet.add(cell.getRowIndex());
                     }
@@ -124,33 +124,6 @@ public abstract class AbsrtactSelector<T> implements SelectAble<T>{
         return cellSet;
     }
 
-
-
-    /*获取某个单元格数据*/
-    static  String getCellContext(Cell cell) {
-        String cellValue = "";
-        if(cell==null){return "";}
-        switch (cell.getCellType()) {
-            case CELL_TYPE_BLANK:
-                cellValue = "空";
-                break;
-            case CELL_TYPE_STRING:
-                cellValue = cell.getStringCellValue();
-                break;
-            case CELL_TYPE_NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    cellValue = sdf.format(cell.getDateCellValue());
-                } else {
-                    cellValue = "" + cell.getNumericCellValue();
-                }
-                break;
-            case CELL_TYPE_BOOLEAN:
-                cellValue = "" + cell.getBooleanCellValue();
-                break;
-        }
-        return cellValue;
-    }
 
 
 }

@@ -3,8 +3,10 @@ package org.summer.entity;
 import org.summer.easydb.annotation.Column;
 import org.summer.easydb.annotation.SheetInfo;
 
+import java.io.Serializable;
+
 @SheetInfo(sheetIndex = 1 ,beginRowIndex = 1)
-public class Account {
+public class Account implements Serializable {
     @Column(index = "A")
     private String account;
     @Column(index = "B")

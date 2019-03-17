@@ -2,6 +2,7 @@ package org.summer.easydb.impl;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 /**
  * @ClassName Monitor
@@ -12,10 +13,10 @@ import java.util.Observer;
 public class Monitor implements Observer {
     @Override
     public void update(Observable o, Object arg) {
-        Integer rowNums=((Integer)arg).intValue();
-        if(rowNums>5200)
+        Integer nullRowNums=((Set)arg).size();
+        if(nullRowNums>5200)
         {
-            System.out.println("数据库数量太多主义整理");
+            System.out.println("数据库数量太多主义整理空行太多需要整理");
         }
 
 

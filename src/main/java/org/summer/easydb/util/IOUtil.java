@@ -17,7 +17,7 @@ public class IOUtil {
 
 
 
-    public static  boolean write(String src, Workbook workBook) {
+    public static  synchronized boolean write(String src, Workbook workBook) {
         OutputStream fos=null;
         try {
             fos = new FileOutputStream(src);

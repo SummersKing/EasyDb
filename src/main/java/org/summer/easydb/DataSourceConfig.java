@@ -6,6 +6,6 @@ package org.summer.easydb;
     *@LastModified 
  **/
 public interface DataSourceConfig {
-    String DataSource();
-
+    String dataSource();
+    String password();
 }

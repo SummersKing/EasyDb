@@ -2,7 +2,7 @@ package org.summer.easydb;
 
 import java.util.List;
 
-public interface EditAble<T> {
+public interface EditAble<T>  {
     /*
      * @Name write
      * @Desc 所有的编辑操作左后都需要通过该方法写入数据库中；

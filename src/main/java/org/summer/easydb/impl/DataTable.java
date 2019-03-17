@@ -1,27 +1,23 @@
 package org.summer.easydb.impl;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.summer.easydb.DataAble;
 import org.summer.easydb.EditAble;
-import org.summer.easydb.SelectAble;
-import org.summer.easydb.annotation.Column;
-import org.summer.easydb.util.Util;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 public  class  DataTable<T> extends DataSource implements DataAble<T> , Serializable {
 
-    private int sheetIndex;
-    private Map<Integer, String> headListMap;
-    private Set<Integer> headListKey;
-    private Sheet sheet;
-    private int beginRowIndex;
-    private Class<T> t;
+     int sheetIndex;
+     Map<Integer, String> headListMap;
+     Set<Integer> headListKey;
+     int beginRowIndex;
+     Class<T> t;
+     Sheet sheet;
     public DataTable(){
 
     }
@@ -32,29 +28,14 @@ public  class  DataTable<T> extends DataSource implements DataAble<T> , Serializ
         this.headListKey = headListMap.keySet();
         this.beginRowIndex = beginRowIndex;
         this.sheetIndex = sheetIndex;
-        this.sheet = getWorkbook().getSheetAt(sheetIndex);
         this.t = t;
+        if(super.getWorkbook().getClass()== HSSFWorkbook.class){
+            this.sheet=getWorkbook().getSheetAt(sheetIndex);
+        }else{
+            this.sheet= (XSSFSheet) getWorkbook().getSheetAt(sheetIndex);
 
-    }
-
-
-    public  Map<Integer,Field> getFieldMap() {
-        Map<Integer, String> map = headListMap;
-        Map<Integer,Field> fieldMap=new HashMap<>();
-        Iterator<Integer> iterator = map.keySet().iterator();
-        while (iterator.hasNext()) {
-            try {
-                Integer next = iterator.next();
-                Field field = t.getDeclaredField(map.get(next));
-                fieldMap.put(next,field);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
         }
-        return fieldMap;
     }
-
-
 
 
     public Map<Integer, String> getHeadListMap() {
@@ -65,9 +46,7 @@ public  class  DataTable<T> extends DataSource implements DataAble<T> , Serializ
         return headListKey;
     }
 
-    public Sheet getSheet() {
-        return sheet;
-    }
+
 
     public int getBeginRowIndex() {
         return beginRowIndex;
@@ -82,22 +61,16 @@ public  class  DataTable<T> extends DataSource implements DataAble<T> , Serializ
     }
 
 
+    public int getSheetIndex() {return sheetIndex;}
 
+    public void setSheetIndex(int sheetIndex) { this.sheetIndex = sheetIndex;}
 
-    public int getFieldIndexByName(String fieldName) {
-        int index = 0;
-        try {
-            Field field = t.getDeclaredField(fieldName);
-            Column c = field.getAnnotation(Column.class);
-            if(c==null){
-                throw new IllegalArgumentException("fieldName is  has no such annotation");
-            }
-            index = Util.transferA21(c.index());
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("fieldName is wrong,please check it");
-        }
-        return index;
+    public Sheet getSheet() {
+        return sheet;
+    }
+
+    public void setSheet(Sheet sheet) {
+        this.sheet = sheet;
     }
 
     @Override
